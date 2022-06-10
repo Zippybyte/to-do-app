@@ -11,7 +11,7 @@ def main():
         command = input("input command: ")
         commands = command.split()
         if commands[0] == "c":
-            create_item(commands[1:])
+            parse_create_item(commands[1:])
         elif commands[0] == "e":
             edit_item(commands[1:])
         elif commands[0] == "x":
@@ -27,22 +27,32 @@ def main():
 # x change
 # d delete
 
-def create_item(args: list[str]):
-    global todo_items_index, todo_items
+def parse_create_item(args: list[str]):
+    if (len(args) < 2):
+        print("Not enough args")
+        return
     print("Create item")
-    print(todo_items_index)
-    item: todo_dataclasses.ToDoItem = todo_dataclasses.ToDoItem(
-        todo_items_index,
-        args[0],
-        args[1],
-        None,
-        None,
-        None,
-        datetime.now,
-        None,
-        None,
+    generate_item(args[0], args[1], None, None, None, None, 0, todo_dataclasses.CompletionType(0))
+
+def generate_item(name: str, description: str, repetition: todo_dataclasses.RepeatDate, categories: list[str], tags: list[str], due_by_date: datetime, completion_state: int, completion_type: todo_dataclasses.CompletionType):
+    assert completion_type != None, "completion_type must not be None"
+    add_to_database(todo_dataclasses.ToDoItem(
         0,
-        todo_dataclasses.CompletionType(0))
+        name,
+        description,
+        repetition,
+        categories,
+        tags,
+        datetime.now,
+        due_by_date,
+        None,
+        completion_state,
+        completion_type
+    ))
+
+def add_to_database(item: todo_dataclasses.ToDoItem):
+    global todo_items_index
+    item.id = todo_items_index
     todo_items[todo_items_index] = item
     todo_items_index += 1
 
