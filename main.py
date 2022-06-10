@@ -19,7 +19,7 @@ def main():
         elif commands[0] == "d":
             delete_item(commands[1:])
         elif commands[0] == "l":
-            list_items()
+            parse_list_items()
             
 
 # c create
@@ -80,9 +80,12 @@ def delete_item(args: list[str]):
     del todo_items[index]
     print(f"deleted item at index {index}")
 
-def list_items():
-    for (index, item) in todo_items.items():
+def parse_list_items():
+    for (index, item) in fetch_items().items():
         print(item.id, item.name, item.description, item.completion_state)
+
+def fetch_items():
+    return todo_items
 
 if __name__ == "__main__":
     main()
