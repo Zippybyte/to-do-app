@@ -31,12 +31,15 @@ def parse_create_item(args: list[str]):
     if (len(args) < 2):
         print("Not enough args")
         return
-    print("Create item")
-    generate_item(args[0], args[1], None, None, None, None, 0, todo_dataclasses.CompletionType(0))
 
-def generate_item(name: str, description: str, repetition: todo_dataclasses.RepeatDate, categories: list[str], tags: list[str], due_by_date: datetime, completion_state: int, completion_type: todo_dataclasses.CompletionType):
+    add_to_database(generate_item(args[0], args[1], None, None, None, None, 0, todo_dataclasses.CompletionType(0)))
+
+
+def generate_item(name: str, description: str, repetition: todo_dataclasses.RepeatDate, categories: list[str], tags: list[str], due_by_date: datetime, completion_state: int, completion_type: todo_dataclasses.CompletionType) -> todo_dataclasses.ToDoItem:
+    print(f"Created item {name}")
+    
     assert completion_type != None, "completion_type must not be None"
-    add_to_database(todo_dataclasses.ToDoItem(
+    return todo_dataclasses.ToDoItem(
         0,
         name,
         description,
@@ -48,7 +51,7 @@ def generate_item(name: str, description: str, repetition: todo_dataclasses.Repe
         None,
         completion_state,
         completion_type
-    ))
+    )
 
 def add_to_database(item: todo_dataclasses.ToDoItem):
     global todo_items_index
