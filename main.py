@@ -13,9 +13,9 @@ def main():
         if commands[0] == "c":
             parse_create_item(commands[1:])
         elif commands[0] == "e":
-            edit_item(commands[1:])
+            parse_edit_item(commands[1:])
         elif commands[0] == "x":
-            change_item_state(commands[1:])
+            parse_change_item_state(commands[1:])
         elif commands[0] == "d":
             delete_item(commands[1:])
         elif commands[0] == "l":
@@ -26,6 +26,7 @@ def main():
 # e edit
 # x change
 # d delete
+# l list
 
 def parse_create_item(args: list[str]):
     if (len(args) < 2):
@@ -53,42 +54,80 @@ def generate_item(name: str, description: str, repetition: todo_dataclasses.Repe
         completion_type
     )
 
+def parse_edit_item(args: list[str]):
+    try:
+        item = get_item(int(args[0]))
+    except ValueError:
+        print("args[0] is not an int")
+        return
+
+    edit_item(item, args[1], args[2])
+
+def edit_item(item: todo_dataclasses.ToDoItem, field: str, value: str):
+
+    try: 
+        new_value = type(getattr(item, field))(value)
+    except ValueError:
+        print("field and value's type don't match")
+        return
+
+    old_value = getattr(item, field)
+    setattr(item, field, new_value)
+    database_edit_field(item, field, new_value)
+
+    print(f"{item}'s {field} is now {new_value} was {old_value}")
+
+def parse_change_item_state(args: list[str]):
+    try:
+        index = int(args[0])
+        new_state = int(args[1])
+    except ValueError: 
+        print("index or state have to be ints")
+        return
+
+    change_item_state(index, new_state)
+
+def parse_delete_item(args: list[str]):
+    """Parses arguments from main and runs delete_item."""
+    try:
+        index = int(args[0])
+    except ValueError: 
+        return
+
+    delete_item(index)
+
+def delete_item(index: int):
+    """Deletes an item from database."""
+    print("Delete item")
+
+    del get_item(index)
+    print(f"Deleted item at index {index}")
+
+def parse_list_items():
+    for item in fetch_items():
+        print(item.id, item.name, item.description, item.completion_state)
+
+# Database
+
+def database_edit_field(item: todo_dataclasses.ToDoItem, field: str, new_value):
+    todo_items[item.id] = item
+
+def change_item_state(index: int, new_state: int):
+    print(f"{get_item(index).completion_state} is now {new_state}")
+    
+    get_item(index).completion_state = new_state
+
+def get_item(index: int) -> todo_dataclasses.ToDoItem:
+    return todo_items[index]
+
 def add_to_database(item: todo_dataclasses.ToDoItem):
     global todo_items_index
     item.id = todo_items_index
     todo_items[todo_items_index] = item
     todo_items_index += 1
 
-def edit_item(args: list[str]):
-    print("Edit item")
-
-def complete_item(args: list[str]):
-    change_item_state(args)
-
-def change_item_state(args: list[str]):
-    print("Change item state")
-    try:
-        index = int(args[0])
-        new_state = int(args[1])
-    except ValueError: 
-        return
-    todo_items[index].completion_state = new_state
-
-def delete_item(args: list[str]):
-    print("Delete item")
-    try:
-        index = int(args[0])
-    except ValueError: 
-        return
-    del todo_items[index]
-    print(f"deleted item at index {index}")
-
-def parse_list_items():
-    for (index, item) in fetch_items().items():
-        print(item.id, item.name, item.description, item.completion_state)
-
-def fetch_items():
-    return todo_items
+def fetch_items() -> list[todo_dataclasses.ToDoItem]:
+    return todo_items.values()
 
 if __name__ == "__main__":
     main()
