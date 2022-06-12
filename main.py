@@ -17,10 +17,9 @@ def main():
         elif commands[0] == "x":
             parse_change_item_state(commands[1:])
         elif commands[0] == "d":
-            delete_item(commands[1:])
+            parse_delete_item(commands[1:])
         elif commands[0] == "l":
             parse_list_items()
-            
 
 # c create
 # e edit
@@ -30,13 +29,14 @@ def main():
 
 def parse_create_item(args: list[str]):
     if (len(args) < 2):
-        print("Not enough args")
-        return
+        raise ValueError("Not enough args.")
+    elif args[0].strip() == "":
+        raise ValueError("Name has to contain non-whitespace.")
+    
+    add_to_database(create_item(args[0], args[1], None, None, None, None, 0, todo_dataclasses.CompletionType(0)))
 
-    add_to_database(generate_item(args[0], args[1], None, None, None, None, 0, todo_dataclasses.CompletionType(0)))
 
-
-def generate_item(name: str, description: str, repetition: todo_dataclasses.RepeatDate, categories: list[str], tags: list[str], due_by_date: datetime, completion_state: int, completion_type: todo_dataclasses.CompletionType) -> todo_dataclasses.ToDoItem:
+def create_item(name: str, description: str, repetition: todo_dataclasses.RepeatDate, categories: list[str], tags: list[str], due_by_date: datetime, completion_state: int, completion_type: todo_dataclasses.CompletionType) -> todo_dataclasses.ToDoItem:
     print(f"Created item {name}")
     
     assert completion_type != None, "completion_type must not be None"
@@ -60,7 +60,7 @@ def parse_edit_item(args: list[str]):
     except ValueError:
         print("args[0] is not an int")
         return
-
+    
     edit_item(item, args[1], args[2])
 
 def edit_item(item: todo_dataclasses.ToDoItem, field: str, value: str):
@@ -81,10 +81,10 @@ def parse_change_item_state(args: list[str]):
     try:
         index = int(args[0])
         new_state = int(args[1])
-    except ValueError: 
+    except ValueError:
         print("index or state have to be ints")
         return
-
+    
     change_item_state(index, new_state)
 
 def parse_delete_item(args: list[str]):
@@ -96,18 +96,18 @@ def parse_delete_item(args: list[str]):
 
     delete_item(index)
 
-def delete_item(index: int):
-    """Deletes an item from database."""
-    print("Delete item")
-
-    del get_item(index)
-    print(f"Deleted item at index {index}")
-
 def parse_list_items():
     for item in fetch_items():
         print(item.id, item.name, item.description, item.completion_state)
 
 # Database
+
+def delete_item(index: int):
+    """Deletes an item from database."""
+    print("Delete item")
+
+    del todo_items[index]
+    print(f"Deleted item at index {index}")
 
 def database_edit_field(item: todo_dataclasses.ToDoItem, field: str, new_value):
     todo_items[item.id] = item
