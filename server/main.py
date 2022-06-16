@@ -58,8 +58,7 @@ def parse_edit_item(args: list[str]):
     try:
         item = get_item(int(args[0]))
     except ValueError:
-        print("args[0] is not an int")
-        return
+        raise ValueError("args[0] must be an int")
     
     edit_item(item, args[1], args[2])
 
@@ -68,8 +67,7 @@ def edit_item(item: todo_dataclasses.ToDoItem, field: str, value: str):
     try: 
         new_value = type(getattr(item, field))(value)
     except ValueError:
-        print("field and value's type don't match")
-        return
+        raise ValueError("field and value's type must match match")
 
     old_value = getattr(item, field)
     setattr(item, field, new_value)
@@ -82,8 +80,7 @@ def parse_change_item_state(args: list[str]):
         index = int(args[0])
         new_state = int(args[1])
     except ValueError:
-        print("index or state have to be ints")
-        return
+        raise ValueError("index and state must be ints")
     
     change_item_state(index, new_state)
 
@@ -92,7 +89,7 @@ def parse_delete_item(args: list[str]):
     try:
         index = int(args[0])
     except ValueError: 
-        return
+        raise ValueError("args[0] must be an int")
 
     delete_item(index)
 
@@ -104,8 +101,7 @@ def parse_list_items():
 
 def delete_item(index: int):
     """Deletes an item from database."""
-    print("Delete item")
-
+    
     del todo_items[index]
     print(f"Deleted item at index {index}")
 
