@@ -1,5 +1,5 @@
 import unittest
-from main import parse_create_item, create_item
+from server import parse_create_item, create_item
 
 class TestParseCreateItem(unittest.TestCase):
 
