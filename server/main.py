@@ -19,7 +19,7 @@ def main():
         elif commands[0] == "d":
             parse_delete_item(commands[1:])
         elif commands[0] == "l":
-            parse_list_items()
+            list_items()
 
 # c create
 # e edit
@@ -98,7 +98,7 @@ def parse_delete_item(args: list[str]):
 
     delete_item(index)
 
-def parse_list_items():
+def list_items():
     """Lists items from database."""
     for item in fetch_items():
         print(item.id, item.name, item.description, item.completion_state)
