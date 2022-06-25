@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block title %}Create{% endblock %}
+
+{% block body %}
+    <form method="post">
+        Create an item
+        <div>
+            <label for="name">Enter the item's name</label>
+            <input type="text" name="name" id="name" required autofocus>
+        </div>
+        <input type="submit">
+    </form>
+{% endblock %}

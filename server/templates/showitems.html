@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}Show items{% endblock %}
+
+{% block body %}
+    Shows items
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Comment</th>
+            <th>Completion state</th>
+        </tr>
+        <tr>
+            {% for item in items %}
+                <td>{{ item.name }}</td>
+                <td>{{ item.comment }}</td>
+                <td>{{ item.completion_state }}</td>
+            {% endfor %}
+        </tr>
+    </table>
+    
+{% endblock %}
