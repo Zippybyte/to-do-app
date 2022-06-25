@@ -1,20 +1,28 @@
-from .main import add_to_database, create_item, get_item, edit_item, change_item_state, delete_item, fetch_items
+from .database import DatabaseModel, add, create_item, get, edit_item, change_state, delete_item, fetch_all
+from . import database
+from . import array_database
 from . import todo_dataclasses
 
 def main():
+    database.database = array_database.ArrayDatabase()
     while True:
         command = input("input command: ")
         commands = command.split()
-        if commands[0] == "c":
-            parse_create_item(commands[1:])
-        elif commands[0] == "e":
-            parse_edit_item(commands[1:])
-        elif commands[0] == "x":
-            parse_change_item_state(commands[1:])
-        elif commands[0] == "d":
-            parse_delete_item(commands[1:])
-        elif commands[0] == "l":
-            list_items()
+        try:
+            if commands[0] == "c":
+                parse_create_item(commands[1:])
+            elif commands[0] == "e":
+                parse_edit_item(commands[1:])
+            elif commands[0] == "x":
+                parse_change_item_state(commands[1:])
+            elif commands[0] == "d":
+                parse_delete_item(commands[1:])
+            elif commands[0] == "l":
+                list_items()
+            elif commands[0] == "q":
+                break
+        except Exception as e:
+            print(e)
 
 # c create
 # e edit
@@ -29,12 +37,12 @@ def parse_create_item(args: list[str]):
     elif args[0].strip() == "":
         raise ValueError("Name has to contain non-whitespace.")
     
-    add_to_database(create_item(args[0], args[1], None, None, None, None, 0, todo_dataclasses.CompletionType(0)))
+    add(create_item(args[0], args[1], None, None, None, None, 0, todo_dataclasses.CompletionType(0)))
 
 def parse_edit_item(args: list[str]):
     """Parses arguments and edits the value of an item."""
     try:
-        item = get_item(int(args[0]))
+        item = get(int(args[0]))
     except ValueError:
         raise ValueError("args[0] must be an int")
     
@@ -48,7 +56,7 @@ def parse_change_item_state(args: list[str]):
     except ValueError:
         raise ValueError("index and state must be ints")
     
-    change_item_state(index, new_state)
+    change_state(index, new_state)
 
 def parse_delete_item(args: list[str]):
     """Parses arguments and deletes a given item."""
@@ -61,7 +69,7 @@ def parse_delete_item(args: list[str]):
 
 def list_items():
     """Prints all items from database."""
-    for item in fetch_items():
+    for item in fetch_all():
         print(item.id, item.name, item.description, item.completion_state)
 
 if __name__ == "__main__":

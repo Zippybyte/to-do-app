@@ -1,5 +1,5 @@
 import unittest
-from server.main import create_item
+from server.array_database import create_item
 from server.commandline import parse_create_item
 from server.todo_dataclasses import CompletionType, ToDoItem
 
