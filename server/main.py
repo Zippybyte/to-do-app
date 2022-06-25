@@ -60,6 +60,10 @@ def get_item(index: int) -> todo_dataclasses.ToDoItem:
     """Gets an item from the database."""
     return todo_items[index]
 
+def get_all_items() -> list[todo_dataclasses.ToDoItem]:
+    """Gets all items from the database"""
+    return todo_items.values()
+
 def add_to_database(item: todo_dataclasses.ToDoItem):
     """Adds an item to the database."""
     global todo_items_index
