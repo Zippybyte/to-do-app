@@ -4,9 +4,7 @@ from . import todo_dataclasses
 
 # Definitions
 class DatabaseModel(ABC):
-    def __init__(self):
-        pass
-
+    # Todo list
     @abstractmethod
     def delete_item(self, index: int):
         """Deletes an item from database."""
@@ -37,6 +35,48 @@ class DatabaseModel(ABC):
         """Fetches all items from the database."""
         pass
 
+    # Categories
+    @abstractmethod
+    def add_category(self, category: int):
+        """Adds a category to the categories database."""
+        pass
+
+    # @abstractmethod
+    # def delete_category(self, category: int):
+    #     """Delete a category to the categories database."""
+    #     pass
+
+    # @abstractmethod
+    # def get_category(self, category: int):
+    #     """Get a category from the categories database."""
+    #     pass
+
+    # @abstractmethod
+    # def get_categories(self):
+    #     """Get all categories in the categories database."""
+    #     pass
+
+    # Tags
+    @abstractmethod
+    def add_tag(self, tag: int):
+        """Adds a tag to the tags database."""
+        pass
+
+    # @abstractmethod
+    # def delete_tag(self, tag: int):
+    #     """Delete a tag to the tags database."""
+    #     pass
+
+    # @abstractmethod
+    # def get_tag(self, tag: int):
+    #     """Get a tag from the tags database."""
+    #     pass
+
+    # @abstractmethod
+    # def get_tags(self):
+    #     """Get all tags in the tags database."""
+    #     pass
+
 
 
 # Data
@@ -66,7 +106,7 @@ def create_item(name: str, description: str, repetition: todo_dataclasses.Repeat
 def edit_item(item: todo_dataclasses.ToDoItem, field: str, value: str):
     """Edits an item given a item, field, and value."""
 
-    try: 
+    try:
         new_value = type(getattr(item, field))(value)
     except ValueError:
         raise ValueError("field and value's type must match match")
@@ -77,7 +117,7 @@ def edit_item(item: todo_dataclasses.ToDoItem, field: str, value: str):
 
     print(f"{item}'s {field} is now {new_value} was {old_value}")
 
-def delete_item(index: int):
+def delete_item(connection, index: int):
     """Deletes an item from database."""
     database.delete_item(index)
 

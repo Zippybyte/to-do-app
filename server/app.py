@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request, redirect
-from . import database, todo_dataclasses
+from . import database, todo_dataclasses, sqlite_database
 
 app = Flask(__name__)
+database.database = sqlite_database.SQLiteDatabase("todo_list")
+
 
 @app.route("/")
 def homepage():

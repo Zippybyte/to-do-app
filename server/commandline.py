@@ -1,28 +1,29 @@
 from .database import DatabaseModel, add, create_item, get, edit_item, change_state, delete_item, fetch_all
 from . import database
-from . import array_database
+from . import array_database, sqlite_database
 from . import todo_dataclasses
 
 def main():
-    database.database = array_database.ArrayDatabase()
+    #database.database = array_database.ArrayDatabase()
+    database.database = sqlite_database.SQLiteDatabase("todo_list")
     while True:
         command = input("input command: ")
         commands = command.split()
-        try:
-            if commands[0] == "c":
-                parse_create_item(commands[1:])
-            elif commands[0] == "e":
-                parse_edit_item(commands[1:])
-            elif commands[0] == "x":
-                parse_change_item_state(commands[1:])
-            elif commands[0] == "d":
-                parse_delete_item(commands[1:])
-            elif commands[0] == "l":
-                list_items()
-            elif commands[0] == "q":
-                break
-        except Exception as e:
-            print(e)
+        # try:
+        if commands[0] == "c":
+            parse_create_item(commands[1:])
+        elif commands[0] == "e":
+            parse_edit_item(commands[1:])
+        elif commands[0] == "x":
+            parse_change_item_state(commands[1:])
+        elif commands[0] == "d":
+            parse_delete_item(commands[1:])
+        elif commands[0] == "l":
+            list_items()
+        elif commands[0] == "q":
+            break
+        # except Exception as e:
+        #     print(e.with_traceback())
 
 # c create
 # e edit
@@ -42,7 +43,7 @@ def parse_create_item(args: list[str]):
 def parse_edit_item(args: list[str]):
     """Parses arguments and edits the value of an item."""
     try:
-        item = get(int(args[0]))
+        item = int(args[0])
     except ValueError:
         raise ValueError("args[0] must be an int")
     
@@ -69,8 +70,11 @@ def parse_delete_item(args: list[str]):
 
 def list_items():
     """Prints all items from database."""
-    for item in fetch_all():
-        print(item.id, item.name, item.description, item.completion_state)
+    items = fetch_all()
+    if (len(items) == 0):
+        return
+    for v in items:
+        print(v["name"], v["description"])
 
 if __name__ == "__main__":
     main()

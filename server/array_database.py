@@ -5,9 +5,6 @@ todo_items_index: int = 0
 todo_items: dict[int, todo_dataclasses.ToDoItem] = {}
 
 class ArrayDatabase(database.DatabaseModel):
-    def __init__(self):
-        pass
-
     def delete_item(self, index: int):
         del todo_items[index]
         print(f"Deleted item at index {index}")
